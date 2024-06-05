@@ -1,7 +1,5 @@
-from typing import TYPE_CHECKING, List
-from nonebot.plugin.on import on_command
-from nonebot.adapters.onebot.v11 import Bot, Message, GroupMessageEvent ,MessageSegment
-from nonebot.adapters.onebot.v11.helpers import Cooldown
+from typing import List
+from nonebot.adapters.onebot.v11 import Bot, Message, GroupMessageEvent
 from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
 from math import ceil
