@@ -14,8 +14,11 @@ _✨ [Nonebot2](https://github.com/nonebot/nonebot2) 插件，NoneBot2学院偶�
 ### 1.使用nb-cli安装
 执行
 ```
-nb plugin install nonebot_plugin_gakuenImasCalculator
+pip install nonebot_plugin_gakuenImasCalculator
 ```
+然后打开 nonebot2 项目根目录下的 `pyproject.toml` 文件, 在 `[tool.nonebot]` 部分追加写入
+
+    plugins = ["nonebot_plugin_gakuenImasCalculator"]
 
 或其他任意加载方式
 
