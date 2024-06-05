@@ -23,6 +23,5 @@ setup(
     packages = find_packages(),
     include_package_data = True,
     platforms = "any",
-    install_requires = ["nonebot-adapter-onebot>=2.4.3",
-    "nonebot2[fastapi]>=2.3.0"]
+    install_requires = ["nonebot2"]
 )
