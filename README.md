@@ -35,3 +35,4 @@ pip install nonebot_plugin_gakuenImasCalculator
 在群聊中输入算分与期末时的三维属性
 算分 1000 1000 1000
 ```  
+<img src="https://github.com/ikarosf/nonebot_plugin_gakuenImasCalculator/blob/main/suanfen.png" alt="碧蓝档案塔罗牌占卜图标" >
