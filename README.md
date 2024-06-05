@@ -1,0 +1,2 @@
+# nonebot_plugin_gakuenImasCalculator
+NoneBot2学院偶像大师算分插件
