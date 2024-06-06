@@ -5,7 +5,7 @@ from nonebot.plugin import PluginMetadata
 
 from .config import Config
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 __plugin_meta__ = PluginMetadata(
     name="学园偶像大师算分插件",
     description="学院偶像大师算分",
