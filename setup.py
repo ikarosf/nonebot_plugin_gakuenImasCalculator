@@ -9,8 +9,8 @@ with open("README.md","r",encoding="utf-8") as fh:
 
 setup(
     name = "nonebot_plugin_gakuenImasCalculator",
-    version = "0.0.6",
-    keywords = ("nonebot","plugin", "gakuenImas", "Calculator"),
+    version = "0.0.7",
+    keywords = ("nonebot","plugin", "gakuenImas", "Calculator","gakuenIdolMaster"),
     description = "NoneBot2学院偶像大师算分插件",
     long_description = long_description,
     long_description_content_type = "text/markdown",
@@ -23,5 +23,5 @@ setup(
     packages = find_packages(),
     include_package_data = True,
     platforms = "any",
-    install_requires = ["nonebot2","nonebot-adapter-onebot>=2.3.1"]
+    install_requires = ["nonebot2>=2.2.0,<3.0.0"]
 )

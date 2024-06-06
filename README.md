@@ -3,7 +3,7 @@
 
 # nonebot_plugin_gakuenImasCalculator
 
-_✨ [Nonebot2](https://github.com/nonebot/nonebot2) 插件，NoneBot2学院偶像大师算分插件  ✨_
+_✨ [Nonebot2](https://github.com/nonebot/nonebot2) 插件，NoneBot2学院偶像大师(gakuenIdolMaster)算分插件  ✨_
 
 
 

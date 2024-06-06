@@ -1,9 +1,8 @@
-from nonebot.plugin.on import on_command
-from .calc import *
-
 from nonebot.plugin import PluginMetadata
+from nonebot.plugin.on import on_command
+from .calc import calc_rank
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __plugin_meta__ = PluginMetadata(
     name="学园偶像大师算分插件",
     description="学院偶像大师算分",

@@ -1,11 +1,11 @@
-from typing import List
-from nonebot.adapters.onebot.v11 import Bot, Message, GroupMessageEvent
+from nonebot.adapters import Bot, Message, Event
 from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
 from math import ceil
 from decimal import Decimal
+from typing import List
 
-async def calc_rank(bot: Bot, event: GroupMessageEvent , matcher: Matcher, cmd_arg: Message = CommandArg()):
+async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message = CommandArg()):
     args: List[str] = cmd_arg.extract_plain_text().strip().split()
 
     if(len(args) != 3):
