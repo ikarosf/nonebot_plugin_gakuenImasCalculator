@@ -59,7 +59,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
         Ascore = ceil((juliA - 2250 )/ 0.04)
     elif juliA <= 3650:
         Ascore = ceil((juliA - 2850 )/ 0.02)
-    elif juliA <= 3650:
+    elif juliA <= 3750:
         Ascore = ceil((juliA - 3250 )/ 0.01)
     else:
         Ascore = -1
@@ -76,7 +76,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
         Apscore = ceil((juliAp - 2250 )/ 0.04)
     elif juliAp <= 3650:
         Apscore = ceil((juliAp - 2850 )/ 0.02)
-    elif juliAp <= 3650:
+    elif juliAp <= 3750:
         Apscore = ceil((juliAp - 3250 )/ 0.01)
     else:
         Apscore = -1
@@ -93,7 +93,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
         Sscore = ceil((juliS - 2250 )/ 0.04)
     elif juliS <= 3650:
         Sscore = ceil((juliS - 2850 )/ 0.02)
-    elif juliS <= 3650:
+    elif juliS <= 3750:
         Sscore = ceil((juliS - 3250 )/ 0.01)
     else:
         Sscore = -1
@@ -101,6 +101,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
     retmessage = ""
     if shuxingyichuFLAG:
         retmessage += "属性溢出了，单属性最高只计算1500\n"
+    retmessage += "你的属性总合为： " + str(VO) + " + " + str(DI) + " + " + str(VI) + " + 90 = " + int((VO + DI + VI + Decimal(90))) + "\n"
     if Ascore == -1:
         retmessage += "杂鱼连A都不可能到的，杂鱼杂鱼"
         await matcher.finish(retmessage)
