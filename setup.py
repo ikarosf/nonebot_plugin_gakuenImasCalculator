@@ -9,7 +9,7 @@ with open("README.md","r",encoding="utf-8") as fh:
 
 setup(
     name = "nonebot_plugin_gakuenImasCalculator",
-    version = "0.0.8",
+    version = "0.0.9",
     keywords = ("nonebot","plugin", "gakuenImas", "Calculator","gakuenIdolMaster"),
     description = "NoneBot2学院偶像大师算分插件",
     long_description = long_description,

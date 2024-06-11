@@ -101,7 +101,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
     retmessage = ""
     if shuxingyichuFLAG:
         retmessage += "属性溢出了，单属性最高只计算1500\n"
-    retmessage += "你的属性总合为： " + str(VO) + " + " + str(DI) + " + " + str(VI) + " + 90 = " + int((VO + DI + VI + Decimal(90))) + "\n"
+    retmessage += "你的属性总合为： " + str(VO) + " + " + str(DI) + " + " + str(VI) + " + 90 = " + str((VO + DI + VI + Decimal(90))) + "\n"
     if Ascore == -1:
         retmessage += "杂鱼连A都不可能到的，杂鱼杂鱼"
         await matcher.finish(retmessage)
