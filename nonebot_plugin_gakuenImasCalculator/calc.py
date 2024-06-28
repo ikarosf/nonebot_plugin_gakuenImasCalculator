@@ -59,7 +59,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
         Ascore = ceil((juliA - 2250 )/ 0.04)
     elif juliA <= 3650:
         Ascore = ceil((juliA - 2850 )/ 0.02)
-    elif juliA <= 3750:
+    elif juliA <= 3950:
         Ascore = ceil((juliA - 3250 )/ 0.01)
     else:
         Ascore = -1
@@ -76,7 +76,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
         Apscore = ceil((juliAp - 2250 )/ 0.04)
     elif juliAp <= 3650:
         Apscore = ceil((juliAp - 2850 )/ 0.02)
-    elif juliAp <= 3750:
+    elif juliAp <= 3950:
         Apscore = ceil((juliAp - 3250 )/ 0.01)
     else:
         Apscore = -1
@@ -93,7 +93,7 @@ async def calc_rank(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message 
         Sscore = ceil((juliS - 2250 )/ 0.04)
     elif juliS <= 3650:
         Sscore = ceil((juliS - 2850 )/ 0.02)
-    elif juliS <= 3750:
+    elif juliS <= 3950:
         Sscore = ceil((juliS - 3250 )/ 0.01)
     else:
         Sscore = -1
