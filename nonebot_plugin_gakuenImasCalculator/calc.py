@@ -244,10 +244,16 @@ async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg:
     if(len(args) == 3):
         if(state["examstage1"] != 1):
             await matcher.finish("参数错误，算属性结束！1")
-        state["examstagesp"] = [int(x) for x in args]
+        try:
+            state["examstagesp"] = [int(x) for x in args]
+        except:
+            await matcher.finish("参数错误，算属性结束！2")
         await matcher.send("请输入当前三维属性红蓝黄，以空格分割")
     elif(len(args) == 1):
-        myarg = int(args[0])
+        try:
+            myarg = int(args[0])
+        except:
+            await matcher.finish("参数错误，算属性结束！3")
         if myarg == 1 :
             state["examstage1"] = myarg
             await matcher.reject("请输入3训练是否有sp，1代表有0代表没有，以空格分割，如1 0 0")
@@ -256,21 +262,21 @@ async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg:
             state["examstagesp"] = None
             await matcher.send("请输入当前三维属性红蓝黄，以空格分割")
         else:
-            await matcher.finish("参数错误，算属性结束！2")
+            await matcher.finish("参数错误，算属性结束！4")
     else:
-        await matcher.finish("参数错误，算属性结束！3")
+        await matcher.finish("参数错误，算属性结束！5")
 
 @calc_highattr.got("examattr")
 async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg: Message = Arg("examattr")):
     args: List[str] = cmd_arg.extract_plain_text().strip().split()
 
     if(len(args) != 3):
-        await matcher.finish("参数错误，算属性结束！4")
+        await matcher.finish("参数错误，算属性结束！6")
 
     try:
         state["attrlist"] = [int(args[0]),int(args[1]),int(args[2])]
     except:
-        await matcher.finish("参数错误，算属性结束！5")
+        await matcher.finish("参数错误，算属性结束！7")
     await matcher.send("请输入三属性额外增加百分比（省略百分号），以空格分割")
 
 @calc_highattr.got("examattrbonus")
@@ -278,12 +284,12 @@ async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg:
     args: List[str] = cmd_arg.extract_plain_text().strip().split()
 
     if(len(args) != 3):
-        await matcher.finish("参数错误，算属性结束！6")
+        await matcher.finish("参数错误，算属性结束！8")
 
     try:
         state["attrbonuslist"] = [float(args[0]),float(args[1]),float(args[2])]
     except:
-        await matcher.finish("参数错误，算属性结束！7")
+        await matcher.finish("参数错误，算属性结束！9")
 
     resultlist = _caclattr(state["examstage1"],state["attrlist"],state["attrbonuslist"],state["examstagesp"])
     message = printmaxitem(resultlist)
