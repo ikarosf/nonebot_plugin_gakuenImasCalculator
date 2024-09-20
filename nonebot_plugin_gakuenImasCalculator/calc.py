@@ -6,7 +6,11 @@ from nonebot.typing import T_State
 from math import ceil
 from decimal import Decimal
 from typing import List
+from .OCRattrs import getattrs
+from .calcfun import _calc_rank , attrmaxMap
 
+attrMAX = 1500
+_attrMAX = attrMAX - 30
 
 calc_rank = on_command(
     "算分",
@@ -16,125 +20,48 @@ calc_rank = on_command(
 )
 
 @calc_rank.handle()
-async def _(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message = CommandArg()):
-    args: List[str] = cmd_arg.extract_plain_text().strip().split()
+async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State, cmd_arg: Message = CommandArg()):
+    if cmd_arg:
+        state["calcrankattr"] = cmd_arg
 
-    if(len(args) != 3):
-        await matcher.finish("参数错误，请输入角色三维")
 
-    shuxingyichuFLAG = False
+@calc_rank.got("calcrankattr",prompt="请输入三维数字或图片")
+async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg: Message = Arg("calcrankattr")):
+    for segment in cmd_arg:
+        if segment.type == "image":
+            args = getattrs(segment.data["url"])
+            if(len(args) != 3):
+                await matcher.finish("无法识别的图片")
+            break
+    else:
+        args: List[str] = cmd_arg.extract_plain_text().strip().split()
+        if(len(args) != 3):
+            await matcher.finish("参数错误，请输入角色三维")
+
     VO = Decimal(args[0])
     DI = Decimal(args[1])
     VI = Decimal(args[2])
 
-    if VO > 1470:
-        VO = Decimal(1470)
-        shuxingyichuFLAG = True
-    if DI > 1470:
-        DI = Decimal(1470)
-        shuxingyichuFLAG = True
-    if VI > 1470:
-        VI = Decimal(1470)
-        shuxingyichuFLAG = True
-    
-    shuxingfen = int((VO + DI + VI + Decimal(90))* Decimal(str(2.3)))
-    mingcifen = 1700
-
-    '''
-    <5000 max:1500
-    <10000 2250
-    <20000 3050
-    <30000 3450
-    <40000 3650
-    <50000 3750
-    
-    '''
-    A_rank = 10000
-    Ap_rank = 11500
-    S_rank = 13000
-    biaoxianfenlist = [1500,2250,3050,3450,3650,3750]
-
-    juliA = A_rank - shuxingfen - mingcifen
-    juliAp = Ap_rank - shuxingfen - mingcifen
-    juliS = S_rank - shuxingfen - mingcifen
-
-    if juliA <= 0:
-        Ascore = 0
-    elif juliA <= 1500:
-        Ascore = ceil(juliA / 0.3)
-    elif juliA <= 2250:
-        Ascore = ceil((juliA - 750 )/ 0.15)
-    elif juliA <= 3050:
-        Ascore = ceil((juliA - 1450 )/ 0.08)
-    elif juliA <= 3450:
-        Ascore = ceil((juliA - 2250 )/ 0.04)
-    elif juliA <= 3650:
-        Ascore = ceil((juliA - 2850 )/ 0.02)
-    elif juliA <= 3950:
-        Ascore = ceil((juliA - 3250 )/ 0.01)
-    else:
-        Ascore = -1
-
-    if juliAp <= 0:
-        Apscore = 0
-    elif juliAp <= 1500:
-        Apscore = ceil(juliAp / 0.3)
-    elif juliAp <= 2250:
-        Apscore = ceil((juliAp - 750 )/ 0.15)
-    elif juliAp <= 3050:
-        Apscore = ceil((juliAp - 1450 )/ 0.08)
-    elif juliAp <= 3450:
-        Apscore = ceil((juliAp - 2250 )/ 0.04)
-    elif juliAp <= 3650:
-        Apscore = ceil((juliAp - 2850 )/ 0.02)
-    elif juliAp <= 3950:
-        Apscore = ceil((juliAp - 3250 )/ 0.01)
-    else:
-        Apscore = -1
-
-    if juliS <= 0:
-        Sscore = 0
-    elif juliS <= 1500:
-        Sscore = ceil(juliS / 0.3)
-    elif juliS <= 2250:
-        Sscore = ceil((juliS - 750 )/ 0.15)
-    elif juliS <= 3050:
-        Sscore = ceil((juliS - 1450 )/ 0.08)
-    elif juliS <= 3450:
-        Sscore = ceil((juliS - 2250 )/ 0.04)
-    elif juliS <= 3650:
-        Sscore = ceil((juliS - 2850 )/ 0.02)
-    elif juliS <= 3950:
-        Sscore = ceil((juliS - 3250 )/ 0.01)
-    else:
-        Sscore = -1
-
+    onlyh = False
+    onlym = False
     retmessage = ""
-    if shuxingyichuFLAG:
-        retmessage += "属性溢出了，单属性最高只计算1500\n"
-    retmessage += "你的属性总合为： " + str(VO) + " + " + str(DI) + " + " + str(VI) + " + 90 = " + str((VO + DI + VI + Decimal(90))) + "\n"
-    if Ascore == -1:
-        retmessage += "杂鱼连A都不可能到的，杂鱼杂鱼"
-        await matcher.finish(retmessage)
-    elif Ascore == 0:
-        retmessage += "已经稳A了\n"
-    else:
-        retmessage += "A评价需要获得" + str(Ascore) + "分\n"
 
-    if Apscore == -1:
-        retmessage += "想拿到A+就做梦吧"
-        await matcher.finish(retmessage)
-    elif Apscore == 0:
-        retmessage += "已经稳A+了\n"
-    else:
-        retmessage += "A+评价需要获得" + str(Apscore) + "分\n"
+    if VO <= attrmaxMap["h"] - 30 and DI <= attrmaxMap["h"] - 30 and VI <= attrmaxMap["h"] - 30:
+        onlyh = True
 
-    if Sscore == -1:
-        retmessage += "S是你得不到的"
-    elif Sscore == 0:
-        retmessage += "已经稳S了???你开了吧"
-    else:
-        retmessage += "S评价需要获得" + str(Sscore) + "分"
+    if VO > attrmaxMap["h"] or DI > attrmaxMap["h"] or VI > attrmaxMap["h"]:
+        onlym = True
+
+    if not onlym:
+        if not onlyh:
+            retmessage += "在hard难度下：\n"
+        retmessage += _calc_rank(VO,DI,VI,attrmaxMap["h"])
+
+    if not onlyh:
+        if not onlym:
+            retmessage += "在master难度下：\n"
+        retmessage += _calc_rank(VO,DI,VI,attrmaxMap["m"])
+
     await matcher.finish(retmessage)
 
 
@@ -199,15 +126,15 @@ def _caclattr(stage , attrlist , attrbonuslist , examsplist):
 def printallitem(resultlist):
     messgae = ""
     for item in resultlist:
-        sumattr = sum(min(thisattr, 1470) for thisattr in item[2]) + 90
+        sumattr = sum(min(thisattr, _attrMAX) for thisattr in item[2]) + 90
         
         if len(resultlist) == 3:
             messgae += "选择 " + indextrans[item[1]] + "："
         else:
             messgae += "选择 " + indextrans[item[0]] + " " + indextrans[item[1]] + "："
 
-        sumattr = sum(min(thisattr, 1470) for thisattr in item[2]) + 90
-        messgae += "属性为" + str(min(1470,int(item[2][0]))) + "+" + str(min(1470,int(item[2][1]))) + "+" + str(min(1470,int(item[2][2]))) + "+90=" + str(int(sumattr)) + "\n"
+        sumattr = sum(min(thisattr, _attrMAX) for thisattr in item[2]) + 90
+        messgae += "属性为" + str(min(_attrMAX,int(item[2][0]))) + "+" + str(min(_attrMAX,int(item[2][1]))) + "+" + str(min(_attrMAX,int(item[2][2]))) + "+90=" + str(int(sumattr)) + "\n"
 
     return messgae
 
@@ -216,7 +143,7 @@ def printmaxitem(resultlist):
     maxattr = 0
     maxitem = None
     for item in resultlist:
-        sumattr = sum(min(thisattr, 1470) for thisattr in item[2])
+        sumattr = sum(min(thisattr, _attrMAX) for thisattr in item[2])
         if sumattr > maxattr:
             maxattr = sumattr
             maxitem = item
@@ -227,8 +154,8 @@ def printmaxitem(resultlist):
     else:
         messgae += "选择 " + indextrans[maxitem[0]] + " " + indextrans[maxitem[1]] + "："
 
-    sumattr = sum(min(thisattr, 1470) for thisattr in maxitem[2]) + 90
-    messgae += "属性为" + str(min(1470,int(maxitem[2][0]))) + "+" + str(min(1470,int(maxitem[2][1]))) + "+" + str(min(1470,int(maxitem[2][2]))) + "+90=" + str(int(sumattr)) + "\n"
+    sumattr = sum(min(thisattr, _attrMAX) for thisattr in maxitem[2]) + 90
+    messgae += "属性为" + str(min(_attrMAX,int(maxitem[2][0]))) + "+" + str(min(_attrMAX,int(maxitem[2][1]))) + "+" + str(min(_attrMAX,int(maxitem[2][2]))) + "+90=" + str(int(sumattr)) + "\n"
     return messgae
 
 

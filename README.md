@@ -37,6 +37,10 @@ pip install nonebot_plugin_gakuenImasCalculator
 ```  
 <img src="https://github.com/ikarosf/nonebot_plugin_gakuenImasCalculator/blob/main/suanfen.png" alt="寄寄子算分示例" >
 ```
+在群聊中输入算分与期末属性截图
+```  
+<img src="https://github.com/ikarosf/nonebot_plugin_gakuenImasCalculator/blob/main/suanshuxingocr.png" alt="寄寄子算分示例2" >
+```
 在群聊中输入算属性 计算选择哪项训练能获得最高属性
 ```  
 <img src="https://github.com/ikarosf/nonebot_plugin_gakuenImasCalculator/blob/main/suanshuxing.png" alt="寄寄子算属性示例" >
