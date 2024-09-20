@@ -8,11 +8,20 @@ from PIL import Image
 import numpy as np
 import cv2
 import requests
+import urllib3
+
+requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+try:
+    requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+except AttributeError:
+    # no pyopenssl support used / needed / available
+    pass
 
 def getpic(__pic_url):
     # 发送 HTTP GET 请求，下载图片
 
-    response = requests.get((__pic_url))
+    response = requests.get(__pic_url, verify=False)
 
     # 检查请求是否成功
     if response.status_code == 200:
@@ -38,3 +47,8 @@ def getpic2(__pic_url):
 
     # 显示图像
     return image
+
+
+if __name__ == "__main__":
+    ret = getpic('http://multimedia.nt.qq.com.cn/download?appid=1406&fileid=CgoyNTExNDYyNTA4EhQfVzcAN61BTyouY_v7PhboAGHN_BjJ5Qkg_gooyvuciOLQiAMyBHByb2RQgLsv&spec=0&rkey=CAESKBkcro_MGujokCQEjS-KTYkIVJASmREiXxD3z7jj0Bs6IXK_pGbJH3s')
+    print(ret)
