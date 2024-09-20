@@ -143,7 +143,7 @@ def _calc_rank(vo,di,vi,attrmax):
         retmessage += "S评价需要获得" + str(Sscore) + "分\n"
 
     if Spscore == -1:
-        retmessage += "肖楚楠又在幻想S+了"
+        retmessage += ""
     elif Spscore == 0:
         retmessage += "已经稳S+了???你这是在做梦吧\n"
     else:
