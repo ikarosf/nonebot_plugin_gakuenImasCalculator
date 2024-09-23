@@ -11,7 +11,11 @@ import requests
 import urllib3
 
 requests.packages.urllib3.disable_warnings()
-requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+try:
+    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+except AttributeError:
+    # no pyopenssl support used / needed / available
+    pass
 try:
     requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 except AttributeError:
@@ -20,7 +24,6 @@ except AttributeError:
 
 def getpic(__pic_url):
     # 发送 HTTP GET 请求，下载图片
-
     response = requests.get(__pic_url, verify=False)
 
     # 检查请求是否成功
@@ -39,8 +42,6 @@ def getpic(__pic_url):
     return None
 
 def getpic2(__pic_url):
-    # 发送 HTTP GET 请求，下载图片
-
     current_directory = os.path.dirname(os.path.abspath(__file__))
 
     image = cv2.imread(os.path.join(current_directory,__pic_url))

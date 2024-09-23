@@ -9,9 +9,6 @@ from typing import List
 from .OCRattrs import getattrs
 from .calcfun import _calc_rank , attrmaxMap
 
-attrMAX = 1500
-_attrMAX = attrMAX - 30
-
 calc_rank = on_command(
     "算分",
     aliases={},
@@ -85,11 +82,15 @@ def _caclattr2(attrlist , attrbonuslist , choose):
     resultlist =  [x + y for x, y in zip(attrlist, addattrlist)]
     return resultlist
 
-def _caclattr1(attrlist , attrbonuslist , examsplist , choose):
+def _caclattr1(attrlist , attrbonuslist , examsplist , choose , examLv):
     if examsplist is None:
         raise ValueError("examsplist长度错误")
-    #150 sp 220
-    addattr = 220 if examsplist[choose] == 1 else 150
+    #h:150 sp 220
+    #m:210 sp 280
+    if examLv == "h":
+        addattr = 220 if examsplist[choose] == 1 else 150
+    else:
+        addattr = 280 if examsplist[choose] == 1 else 210
     addattr += addattr * attrbonuslist[choose]
     resultlist = attrlist.copy()
     resultlist[choose] += addattr
@@ -97,7 +98,7 @@ def _caclattr1(attrlist , attrbonuslist , examsplist , choose):
 
     
 
-def _caclattr(stage , attrlist , attrbonuslist , examsplist):
+def _caclattr(stage , attrlist , attrbonuslist , examsplist, examLv):
     if len(attrlist) < 3 or len(attrbonuslist) < 3:
         raise ValueError("attrlist/attrbonuslist长度错误")
     
@@ -108,7 +109,7 @@ def _caclattr(stage , attrlist , attrbonuslist , examsplist):
     if stage == 1:
         for i in range(3):
             templist.append(
-                _caclattr1(attrlist , attrbonuslist , examsplist , i)
+                _caclattr1(attrlist , attrbonuslist , examsplist , i , examLv)
                 )
     else:
         templist.append(attrlist)
@@ -123,7 +124,7 @@ def _caclattr(stage , attrlist , attrbonuslist , examsplist):
             
     return resultlist
     
-def printallitem(resultlist):
+def printallitem(resultlist,_attrMAX):
     messgae = ""
     for item in resultlist:
         sumattr = sum(min(thisattr, _attrMAX) for thisattr in item[2]) + 90
@@ -139,7 +140,7 @@ def printallitem(resultlist):
     return messgae
 
 
-def printmaxitem(resultlist):
+def printmaxitem(resultlist,_attrMAX):
     maxattr = 0
     maxitem = None
     for item in resultlist:
@@ -164,62 +165,85 @@ def printmaxitem(resultlist):
 async def _(bot: Bot, event: Event , matcher: Matcher, cmd_arg: Message = CommandArg()):
     pass
 
-@calc_highattr.got("examstage",prompt="请输入数字指定场景：1、最后一次普通训练或者sp训练2、期末前追训")
+@calc_highattr.got("examstage",prompt="请输入数字指定场景：1、最后一次普通训练或者sp训练 2、期末前追训")
 async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg: Message = Arg("examstage")):
     args: List[str] = cmd_arg.extract_plain_text().strip().split()
 
-    if(len(args) == 3):
-        if(state["examstage1"] != 1):
-            await matcher.finish("参数错误，算属性结束！1")
-        try:
-            state["examstagesp"] = [int(x) for x in args]
-        except:
-            await matcher.finish("参数错误，算属性结束！2")
-        await matcher.send("请输入当前三维属性红蓝黄，以空格分割")
-    elif(len(args) == 1):
+    if len(args) == 1:
         try:
             myarg = int(args[0])
         except:
-            await matcher.finish("参数错误，算属性结束！3")
+            await matcher.finish("参数错误，算属性结束！examstage1")
         if myarg == 1 :
-            state["examstage1"] = myarg
-            await matcher.reject("请输入3训练是否有sp，1代表有0代表没有，以空格分割，如1 0 0")
-        if myarg == 2 :
-            state["examstage1"] = myarg
-            state["examstagesp"] = None
-            await matcher.send("请输入当前三维属性红蓝黄，以空格分割")
+            state["examstage1"] = 1
+        elif myarg == 2 :
+            state["examstage1"] = 2
+            state["examstagesp"] = -1
         else:
-            await matcher.finish("参数错误，算属性结束！4")
+            await matcher.finish("参数错误，算属性结束！examstage2")
     else:
-        await matcher.finish("参数错误，算属性结束！5")
+        await matcher.finish("参数错误，算属性结束！examstage3")
 
-@calc_highattr.got("examattr")
+
+@calc_highattr.got("examstLv",prompt="请输入数字指定难度：1、hard难度 2、master难度")
+async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg: Message = Arg("examstLv")):
+    args: List[str] = cmd_arg.extract_plain_text().strip().split()
+
+    if len(args) == 1:
+        try:
+            myarg = int(args[0])
+        except:
+            await matcher.finish("参数错误，算属性结束！examstLv1")
+        if myarg == 1 :
+            state["examstLv"] = "h"
+        elif myarg == 2 :
+            state["examstLv"] = "m"
+        else:
+            await matcher.finish("参数错误，算属性结束！examstLv2")
+    else:
+        await matcher.finish("参数错误，算属性结束！examstLv3")
+
+@calc_highattr.got("examstagesp",prompt="请输入3训练是否有sp，1代表有0代表没有，以空格分割，如1 0 0")
+async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg: Message = Arg("examstagesp")):
+    args: List[str] = cmd_arg.extract_plain_text().strip().split()
+
+    if state["examstage1"] == 2:
+        return
+
+    if(len(args) != 3):
+        await matcher.finish("参数错误，算属性结束！examstagesp1")
+
+    try:
+        state["examstagesp"] = [int(x) for x in args]
+    except:
+        await matcher.finish("参数错误，算属性结束！examstagesp2")
+
+@calc_highattr.got("examattr",prompt="请输入当前三维属性红蓝黄，以空格分割")
 async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg: Message = Arg("examattr")):
     args: List[str] = cmd_arg.extract_plain_text().strip().split()
 
     if(len(args) != 3):
-        await matcher.finish("参数错误，算属性结束！6")
+        await matcher.finish("参数错误，算属性结束！examattr1")
 
     try:
         state["attrlist"] = [int(args[0]),int(args[1]),int(args[2])]
     except:
-        await matcher.finish("参数错误，算属性结束！7")
-    await matcher.send("请输入三属性额外增加百分比（省略百分号），以空格分割")
+        await matcher.finish("参数错误，算属性结束！examattr2")
 
-@calc_highattr.got("examattrbonus")
+@calc_highattr.got("examattrbonus" ,prompt="请输入三属性额外增加百分比（省略百分号），以空格分割")
 async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg: Message = Arg("examattrbonus")):
     args: List[str] = cmd_arg.extract_plain_text().strip().split()
 
     if(len(args) != 3):
-        await matcher.finish("参数错误，算属性结束！8")
+        await matcher.finish("参数错误，算属性结束！examattrbonus1")
 
     try:
         state["attrbonuslist"] = [float(args[0]),float(args[1]),float(args[2])]
     except:
-        await matcher.finish("参数错误，算属性结束！9")
+        await matcher.finish("参数错误，算属性结束！examattrbonus2")
 
-    resultlist = _caclattr(state["examstage1"],state["attrlist"],state["attrbonuslist"],state["examstagesp"])
-    message = printmaxitem(resultlist)
+    resultlist = _caclattr(state["examstage1"],state["attrlist"],state["attrbonuslist"],state["examstagesp"],state["examstLv"])
+    message = printmaxitem(resultlist,attrmaxMap[state["examstLv"]]-30)
     state["resultlist"] = resultlist
     await matcher.send(message + "输入1查看详细属性，其他输入会结束本次计算")
 
@@ -229,6 +253,6 @@ async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg:
     if args != "1":
         await matcher.finish("已结束！")
 
-    message = printallitem(state["resultlist"])
+    message = printallitem(state["resultlist"],attrmaxMap[state["examstLv"]]-30)
 
     await matcher.finish(message)
