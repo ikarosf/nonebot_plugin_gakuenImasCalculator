@@ -1,7 +1,7 @@
 from nonebot.plugin import PluginMetadata
 from .calc import calc_rank , calc_highattr
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __plugin_meta__ = PluginMetadata(
     name="学园偶像大师算分插件",
     description="学院偶像大师算分",
