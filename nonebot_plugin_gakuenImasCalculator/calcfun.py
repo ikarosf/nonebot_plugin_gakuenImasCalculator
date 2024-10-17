@@ -58,10 +58,8 @@ def _calc_rank(vo,di,vi,attrmax):
         Ascore = ceil((juliA - 2250 )/ 0.04)
     elif juliA <= 3650:
         Ascore = ceil((juliA - 2850 )/ 0.02)
-    elif juliA <= 3950:
-        Ascore = ceil((juliA - 3250 )/ 0.01)
     else:
-        Ascore = -1
+        Ascore = ceil((juliA - 3250 )/ 0.01)
 
     if juliAp <= 0:
         Apscore = 0
@@ -75,10 +73,8 @@ def _calc_rank(vo,di,vi,attrmax):
         Apscore = ceil((juliAp - 2250 )/ 0.04)
     elif juliAp <= 3650:
         Apscore = ceil((juliAp - 2850 )/ 0.02)
-    elif juliAp <= 3950:
-        Apscore = ceil((juliAp - 3250 )/ 0.01)
     else:
-        Apscore = -1
+        Apscore = ceil((juliAp - 3250 )/ 0.01)
 
     if juliS <= 0:
         Sscore = 0
@@ -92,10 +88,8 @@ def _calc_rank(vo,di,vi,attrmax):
         Sscore = ceil((juliS - 2250 )/ 0.04)
     elif juliS <= 3650:
         Sscore = ceil((juliS - 2850 )/ 0.02)
-    elif juliS <= 3950:
-        Sscore = ceil((juliS - 3250 )/ 0.01)
     else:
-        Sscore = -1
+        Sscore = ceil((juliS - 3250 )/ 0.01)
 
     if juliSp <= 0:
         Spscore = 0
@@ -109,10 +103,8 @@ def _calc_rank(vo,di,vi,attrmax):
         Spscore = ceil((juliSp - 2250 )/ 0.04)
     elif juliSp <= 3650:
         Spscore = ceil((juliSp - 2850 )/ 0.02)
-    elif juliSp <= 3950:
-        Spscore = ceil((juliSp - 3250 )/ 0.01)
     else:
-        Spscore = -1
+        Spscore = ceil((juliSp - 3250 )/ 0.01)
 
     retmessage = ""
     if shuxingyichuFLAG:
@@ -145,7 +137,7 @@ def _calc_rank(vo,di,vi,attrmax):
     if Spscore == -1:
         retmessage += ""
     elif Spscore == 0:
-        retmessage += "已经稳S+了???你这是在做梦吧\n"
+        retmessage += "已经稳S+了???你这是在做梦吧"
     else:
-        retmessage += "S+评价需要获得" + str(Spscore) + "分\n"
+        retmessage += "S+评价需要获得" + str(Spscore) + "分"
     return retmessage
