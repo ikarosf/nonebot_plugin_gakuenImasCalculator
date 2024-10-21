@@ -39,12 +39,14 @@ def _calc_rank(vo,di,vi,attrmax):
     Ap_rank = 11500
     S_rank = 13000
     Sp_rank = 14500
+    SS_rank = 16000
     biaoxianfenlist = [1500,2250,3050,3450,3650,3750]
 
     juliA = A_rank - shuxingfen - mingcifen
     juliAp = Ap_rank - shuxingfen - mingcifen
     juliS = S_rank - shuxingfen - mingcifen
     juliSp = Sp_rank - shuxingfen - mingcifen
+    juliSS = SS_rank - shuxingfen - mingcifen
 
     if juliA <= 0:
         Ascore = 0
@@ -106,6 +108,21 @@ def _calc_rank(vo,di,vi,attrmax):
     else:
         Spscore = ceil((juliSp - 3250 )/ 0.01)
 
+    if juliSS <= 0:
+        SSscore = 0
+    elif juliSS <= 1500:
+        SSscore = ceil(juliSS / 0.3)
+    elif juliSS <= 2250:
+        SSscore = ceil((juliSS - 750 )/ 0.15)
+    elif juliSS <= 3050:
+        SSscore = ceil((juliSS - 1450 )/ 0.08)
+    elif juliSS <= 3450:
+        SSscore = ceil((juliSS - 2250 )/ 0.04)
+    elif juliSS <= 3650:
+        SSscore = ceil((juliSS - 2850 )/ 0.02)
+    else:
+        SSscore = ceil((juliSS - 3250 )/ 0.01)
+
     retmessage = ""
     if shuxingyichuFLAG:
         retmessage += "属性溢出了，单属性最高只计算" + str(attrmax) + "\n"
@@ -130,14 +147,22 @@ def _calc_rank(vo,di,vi,attrmax):
         retmessage += "S是你得不到的"
         return retmessage
     elif Sscore == 0:
-        retmessage += "已经稳S了???你开了吧\n"
+        retmessage += "已经稳S了，会赢的！\n"
     else:
         retmessage += "S评价需要获得" + str(Sscore) + "分\n"
 
     if Spscore == -1:
         retmessage += ""
     elif Spscore == 0:
-        retmessage += "已经稳S+了???你这是在做梦吧"
+        retmessage += "已经稳S+了？？没关就是开了？\n"
     else:
-        retmessage += "S+评价需要获得" + str(Spscore) + "分"
+        retmessage += "S+评价需要获得" + str(Spscore) + "分\n"
+
+    if Spscore == -1:
+        retmessage += ""
+    elif Spscore == 0:
+        retmessage += "已经稳SS了？？？你这是在做梦吧？"
+    else:
+        retmessage += "SS评价需要获得" + str(SSscore) + "分"
+
     return retmessage

@@ -53,7 +53,8 @@ async def _(bot: Bot, event: Event , matcher: Matcher, state: T_State , cmd_arg:
         if not onlyh:
             retmessage += "在hard难度下：\n"
         retmessage += _calc_rank(VO,DI,VI,attrmaxMap["h"])
-
+        if not onlyh:
+            retmessage += "\n"
     if not onlyh:
         if not onlym:
             retmessage += "在master难度下：\n"
