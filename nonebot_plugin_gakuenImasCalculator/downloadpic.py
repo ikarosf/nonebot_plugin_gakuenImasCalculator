@@ -9,22 +9,45 @@ import numpy as np
 import cv2
 import requests
 import urllib3
+import ssl
+from requests.adapters import HTTPAdapter
+from urllib3.poolmanager import PoolManager
 
+# 禁用不安全的警告
 requests.packages.urllib3.disable_warnings()
-try:
-    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
-except AttributeError:
-    # no pyopenssl support used / needed / available
-    pass
-try:
-    requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
-except AttributeError:
-    # no pyopenssl support used / needed / available
-    pass
+
+# 自定义 SSL 上下文适配器
+class SSLAdapter(HTTPAdapter):
+    def __init__(self, ssl_context=None, **kwargs):
+        self.ssl_context = ssl_context
+        super().__init__(**kwargs)
+
+    def init_poolmanager(self, *args, **kwargs):
+        context = self.ssl_context or ssl.create_default_context()
+        kwargs['ssl_context'] = context
+        return super().init_poolmanager(*args, **kwargs)
+
+# 创建自定义 SSL 上下文并进行配置
+ssl_context = ssl.create_default_context()
+
+# 如果需要，禁用证书验证
+ssl_context.check_hostname = False  # 禁用主机名检查
+ssl_context.verify_mode = ssl.CERT_NONE  # 不验证证书
+
+# 只允许 AES 加密
+ssl_context.set_ciphers('AES')
+
+# 如果需要自定义 CA 证书文件，可以指定 cafile
+# ssl_context = ssl.create_default_context(cafile="/path/to/your/cafile.pem")
+
+# 创建会话并安装自定义 SSL 适配器
+session = requests.Session()
+adapter = SSLAdapter(ssl_context=ssl_context)
+session.mount('https://', adapter)
 
 def getpic(__pic_url):
     # 发送 HTTP GET 请求，下载图片
-    response = requests.get(__pic_url, verify=False)
+    response = session.get(__pic_url, verify=False)
 
     # 检查请求是否成功
     if response.status_code == 200:
